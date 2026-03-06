@@ -1,7 +1,7 @@
-import { app } from './src/express.js'
+import app from './src/express.js'
 
-const port = process.env.PORT || 3000
+const PORT = 3000
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`)
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`)
 })

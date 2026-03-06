@@ -4,9 +4,10 @@
   "type": "module",
   "main": "app.js",
   "scripts": {
-    "eslint": "npx eslint .",
-    "eslint:fix": "npx eslint . --fix",
-    "test": "npx cross-env NODE_ENV=test npx c8 mocha test/**/*.test.js"
+  "dev": "nodemon app.js",
+  "eslint": "npx eslint .",
+  "eslint:fix": "npx eslint . --fix",
+  "test": "npx cross-env NODE_ENV=test npx c8 mocha test/**/*.test.js"
   },
   "dependencies": {
     "express": "^5.2.1",

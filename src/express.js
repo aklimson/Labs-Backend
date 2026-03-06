@@ -5,16 +5,15 @@ import { errorHandler } from './middleware/errorHandler.js'
 
 export const app = express()
 
-// Use the morgan logger
-app.use(logger('dev', { 
+app.use(logger('dev', {
   immediate: true,
-  skip: () => process.env.NODE_ENV === 'test' 
-}));
+  skip: () => process.env.NODE_ENV === 'test'
+}))
 
+app.use(express.json())
 app.use('/', router)
 
-// 404 handler
 app.use(errorHandler.notFoundDefault)
-
-// global error handler
 app.use(errorHandler.errorDefault)
+
+export default app
