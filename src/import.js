@@ -1,4 +1,4 @@
-import db from '../config/database.js';
+import db from './config/database.js';
 
 // Connect the database and get the 'connection'
 const con = await db.getConnection();

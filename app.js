@@ -1,7 +1,12 @@
-import app from './src/express.js'
+import { app } from './src/express.js'
+import databaseService from "./src/service/DatabaseService.js"
 
-const PORT = 3000
+// Connect to the database
+await databaseService.connect()
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`)
+// Start the express server
+const port = process.env.PORT || 3000
+
+app.listen(port, () => {
+  console.log(`Listening on port ${port}`)
 })
