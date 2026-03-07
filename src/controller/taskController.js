@@ -1,74 +1,128 @@
-export const controller = {}
+import TasksModel from '../model/TasksModel.js';
 
-const tasks = [
-  { id: 1, title: 'Buy milk', completed: false },
-  { id: 2, title: 'Pay bills', completed: true },
-  { id: 3, title: 'Walk the dog', completed: false },
-];
+export const controller = {
+    // GET /tasks
+    // Get all tasks from the database
+    async getTasks(req, res, next) {
+        try {
+            const tasks = await TasksModel.getAll();
+            res.json(tasks);
+        } catch (error) {
+            next(error);
+        }
+    },
 
-controller.getTasks = (req, res) => {
-  res.json(tasks)
-}
+    // GET /tasks/:id
+    // Get one task by id
+    async getTaskById(req, res, next) {
+        try {
+            const task = await TasksModel.getById(req.params.id);
 
-controller.getTaskById = (req, res) => {
-  const taskId = parseInt(req.params.id)
-  const task = tasks.find(t => t.id === taskId)
-  if (task) {
-    res.json(task)
-  } else {
-    res.status(404).json({ error: 'Task not found' })
-  }
-}
+            if (!task) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
 
-controller.createTask = (req, res) => {
-  
-const newTask = req.body
+            res.json(task);
+        } catch (error) {
+            next(error);
+        }
+    },
 
-  // Generate a new ID based on the highest existing ID
-  const newId = tasks.length > 0 
-    ? Math.max(...tasks.map(t => t.id)) + 1 
-    : 1
+    // POST /tasks
+    // Create a new task in the database
+    async createTask(req, res, next) {
+        try {
+            const { title, description, completed } = req.body;
 
-  // Attach the ID to the task object
-  newTask.id = newId
+            // Check that title exists
+            if (!title) {
+                return res.status(400).json({ error: 'Title is required' });
+            }
 
-  tasks.push(newTask)
-  res.status(201).json(newTask)
-}
+            const newTask = await TasksModel.create({
+                title,
+                description,
+                completed
+            });
 
-controller.updateTask = (req, res) => {
-  const taskId = parseInt(req.params.id)
-  const updatedData = req.body
-  const task = tasks.find(t => t.id === taskId)
+            res.status(201).json(newTask);
+        } catch (error) {
+            next(error);
+        }
+    },
 
-  if (task) {
-    Object.assign(task, updatedData)
-    res.json(task)
-  } else {
-    res.status(404).json({ error: 'Task not found' })
-  }
-}
+    // PATCH /tasks/:id
+    // Update part of a task
+    async updateTask(req, res, next) {
+        try {
+            // First get the existing task from the database
+            const existingTask = await TasksModel.getById(req.params.id);
 
-controller.replaceTask = (req, res) => {
-  const taskId = parseInt(req.params.id)
-  const newTaskData = req.body
-  const taskIndex = tasks.findIndex(t => t.id === taskId)
-  if (taskIndex !== -1) {
-    newTaskData.id = taskId // Ensure the ID remains the same
-    tasks[taskIndex] = newTaskData
-    res.json(newTaskData)
-  } else {
-    res.status(404).json({ error: 'Task not found' })
-  }
-}
+            if (!existingTask) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
 
-controller.deleteTask = (req, res) => {
-  const taskId = parseInt(req.params.id)
-  const taskIndex = tasks.findIndex(t => t.id === taskId)
-  if (taskIndex !== -1) {
-    tasks.splice(taskIndex, 1)
-    res.status(204).json()
-  } else {
-    res.status(404).json({ error: 'Task not found' })
-  }
-}
+            // For PATCH, keep old values if new ones are not sent
+            const updatedTaskData = {
+                title: req.body.title ?? existingTask.title,
+                description: req.body.description ?? existingTask.description,
+                completed: req.body.completed ?? existingTask.completed
+            };
+
+            const affectedRows = await TasksModel.update(req.params.id, updatedTaskData);
+
+            if (affectedRows === 0) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            const updatedTask = await TasksModel.getById(req.params.id);
+            res.json(updatedTask);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    // PUT /tasks/:id
+    // Replace the whole task
+    async replaceTask(req, res, next) {
+        try {
+            const { title, description, completed } = req.body;
+
+            // For PUT, require title
+            if (!title) {
+                return res.status(400).json({ error: 'Title is required' });
+            }
+
+            const affectedRows = await TasksModel.update(req.params.id, {
+                title,
+                description: description ?? null,
+                completed: completed ?? false
+            });
+
+            if (affectedRows === 0) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            const updatedTask = await TasksModel.getById(req.params.id);
+            res.json(updatedTask);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    // DELETE /tasks/:id
+    // Delete a task by id
+    async deleteTask(req, res, next) {
+        try {
+            const affectedRows = await TasksModel.delete(req.params.id);
+
+            if (affectedRows === 0) {
+                return res.status(404).json({ error: 'Task not found' });
+            }
+
+            res.json({ message: 'Task deleted successfully' });
+        } catch (error) {
+            next(error);
+        }
+    }
+};
