@@ -1,4 +1,4 @@
-import TasksModel from '../model/TasksModel.js';
+import TasksModel from '../model/tasksModel.js';
 
 export const controller = {
     // GET /tasks
