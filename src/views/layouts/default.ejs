@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <base href="<%= baseURL %>" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title><%= typeof title !== "undefined" ? title : "Lab 3" %></title>
+  <style>
+    body { font-family: system-ui, Arial; max-width: 900px; margin: 24px auto; padding: 0 12px; }
+    nav a { margin-right: 12px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ddd; padding: 8px; }
+    .flash { padding: 10px 12px; margin: 12px 0; border-radius: 8px; }
+    .flash.success { background: #e8fff0; border: 1px solid #91e6b3; }
+    .flash.error { background: #ffecec; border: 1px solid #f2a2a2; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="/">Home</a>
+    <a href="/friday">Friday</a>
+    <a href="/tasks">Tasks</a>
+  </nav>
+
+  <%- include("../partials/flash") %>
+
+  <main>
+    <%- body %>
+  </main>
+</body>
+</html>

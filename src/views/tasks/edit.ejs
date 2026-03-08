@@ -1,0 +1,23 @@
+<h1>Edit task #<%= task.id %></h1>
+
+<form method="POST" action="/tasks/<%= task.id %>">
+  <p>
+    <label>Title<br />
+      <input name="title" value="<%= task.title %>" required />
+    </label>
+  </p>
+  <p>
+    <label>Description<br />
+      <textarea name="description" rows="4"><%= task.description %></textarea>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" name="completed" <%= task.completed ? "checked" : "" %> />
+      Completed
+    </label>
+  </p>
+
+  <button type="submit">Save</button>
+  <a href="/tasks/<%= task.id %>">Cancel</a>
+</form>

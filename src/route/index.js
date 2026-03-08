@@ -4,8 +4,11 @@ import { router as tasksRoute } from './tasks.js'
 import { router as usersRoute } from './usersRoute.js'
 import { router as apikeyRoute } from './apikeyRoute.js'
 import { router as jwtRouter } from './jwtRoute.js'
+import { webRouter } from './web.js'
 
 export const router = express.Router()
+
+router.use('/', webRouter)
 
 router.use('/', helloRoute)
 router.use('/api/v1', tasksRoute)
