@@ -10,7 +10,7 @@ export const router = express.Router()
 
 router.use('/', webRouter)
 
-router.use('/', helloRoute)
+router.use('/hello', helloRoute)
 router.use('/api/v1', tasksRoute)
 router.use('/', usersRoute)
 router.use('/api/v1/apikey', apikeyRoute)
